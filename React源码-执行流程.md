@@ -1865,7 +1865,7 @@ export default HookDemo
 
 这个组件的rootFiber是HookDemo这个对象，当我们点击新增时，react就会创建两棵树，上述所说的。他们之间的关系就是如下图，再commit阶段会执行diff操作，通过同级比对，进行增删改。当执行完毕后，work in progress fiber 变成了 current fiber。每次渲染重复以上操作。以上说讲的是双缓存技术，一边绘制界面，一边操作dom，所以界面不会出现卡顿。
 
-![fiber](D:\summary\blog\fiber.png)
+![fiber](https://github.com/da-xiu/blog/blob/main/fiber.png)
 
 
 
