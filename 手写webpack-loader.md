@@ -15,7 +15,7 @@
                 'style-loader',
                 'css-loader',
                 {
-                    loader: path.resolve('loader/px2rem-loader.make.handle'), // 我们自己的loader，引入方法很多种，这里不一一列举
+                    loader: path.resolve('loader/px2rem-loader.make.handle'), // 我们自己的loader，引入方法很多种，这里不一一列举，使用的绝对路径
                     options: {
                      remUni: 75, // 转化基数
                      remPrecision: 8 // 转化后的保留小数位
