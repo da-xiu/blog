@@ -221,6 +221,7 @@ dotContainer.onclick = (e) => {
 
 	console.log(e.target)
 	let dotIndex = e.target.getAttribute('data-index');
+	if (!dotIndex) return 
 	list.style.left = -dotIndex * IMAGE_WIDTH + 'px'
 	handelDotClassName(dotIndex)
 
