@@ -1,0 +1,2 @@
+[0622/163308:WARNING:url_request_job_manager.cc(89)] Failed to map: weixin://resourceid/blank
+[0622/173845:ERROR:tcp_socket_win.cc(647)] closesocket: 应用程序没有调用 WSAStartup，或者 WSAStartup 失败。 (0x276D)

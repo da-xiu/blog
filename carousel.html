@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>H5端的无缝轮播</title>
+	<style type="text/css">
+		  body,div,ul,li,a,img{margin: 0;padding: 0;}
+     ul,li{list-style: none;}
+  a{text-decoration: none;}
+  .wrapper {
+  	 width: 400px;
+      height: 200px;
+  	position: relative;
+  	 margin: 30px auto; /* 上下边距30px，水平居中 */
+  }
+  .container{
+      position: relative;
+  }
+  .content{      
+  	position:relative;
+      width: 400px;
+      height: 200px;
+      overflow: hidden;
+  }
+  .list{
+      position:relative;
+        height:200px;
+        left: 0;
+        transition: left .5s linear;
+  }
+
+  .list .item {
+  	float:left;
+  	width: 400px;
+  	height: 200px;
+  }
+  .items1 {
+  	width: 400px;
+  	height: 200px;
+  	background: red;
+  }
+  .dot {
+  	width: 150px;
+  	height: 20px;
+  	position: absolute;
+  	bottom: 20px;
+  	left: 30%;
+  }
+
+  .btn_lt, .btn_gt {
+  	width: 50px;
+  	height: 50px;
+  	background: #fff;
+  	color: black;
+  	font-size: 15px;
+  	position: absolute;
+  }
+
+
+
+    .btn_lt {
+	  	top: 40%;
+	  	left: 0;
+	  }
+
+
+  .btn_gt {
+  	top: 40%;
+  	right: 0;
+  }
+
+
+  .dot .dotBtn {
+  	width: 16px;
+  	height: 16px;
+  	display: inline-block;
+  	background: #ccc;
+  	border: 1px solid #ccc;
+  	border-radius: 50%;
+  	margin-left: 10px;
+  }
+
+  .dotBtn.active {
+  	background: #000000;
+  }
+
+	</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="container">
+	<!-- 图片部分 -->
+	<div class="content">
+		<ul class="list">
+			<li class="item">
+				<img src="./images/1.jpg">
+			</li>
+			<li class="item">
+				<img src="./images/2.jpg">
+			</li>
+			<li class="item">
+				<img src="./images/3.jpg">
+			</li>
+			<li class="item">
+				<img src="./images/4.jpg">
+			</li>
+
+		</ul>
+	</div>
+</div>
+<!-- 圆点部分 -->
+<div class="dot">
+	<div class="dotBtn active" data-index='0'></div>
+	<div class="dotBtn" data-index='1'></div>
+	<div class="dotBtn" data-index='2'></div>
+	<div class="dotBtn" data-index='3'></div>
+</div>
+<!-- 箭头部分 -->
+<div class="arrow">
+	<button class="btn_lt">&lt;</button>
+	<button class="btn_gt">&gt;</button>
+</div>
+</div>
+<script type="text/javascript">
+
+
+	/*
+	* 此功能只是简单的H5端轮播实现，但是原理几乎通用，还有使用z-index实现的一种轮
+	* 还有纯c3实现的轮播，我都一一实操了一遍，处理纯c3操作意外，js都需要index来操作图片的显示
+	* 无缝衔接的逻辑，这里使用的是克隆第一张图片放在末尾，为了平滑过渡首尾相连效果
+	* 原点部分，我们可以按照普图片的顺序来给对应的dom设置一个自定义属性，通过这个属性来确定添加active类名
+	* 少了个功能，就是点击dot的时候图片相应的滑动，因为是H5端，这里就不做这个功能，思路是根据我们的data-index点击，找出对应的图片即可
+	*/
+
+
+	// const COLOR = ['pink', 'green', 'orange', 'yellow']
+	let list = document.querySelector('.list');
+	
+	let dotsBtn = document.querySelectorAll('.dotBtn')
+
+	let leftBtn = document.querySelector('.btn_lt')
+	let rightBtn = document.querySelector('.btn_gt');
+	let dotContainer = document.querySelector('.dot')
+
+	// let list = document.querySelector('.list');
+
+	
+	let IMAGE_WIDTH = 400; // 看度宽度可以获取
+	
+	// for(let i = 0;  i<childs.length; i++) {
+	// 	childs[i].style.background = COLOR[i]
+	// }
+
+	let index = 0;
+
+	rightBtn.onclick = () => next()
+
+	leftBtn.onclick = () => prev()
+
+	let cloneEl = list.firstElementChild.cloneNode(true) // 复制第一个节点，新增一张图片来过渡，是使从最后一张过渡到最后一张的时候，看起来自然衔接
+	list.appendChild(cloneEl)
+	let childs = document.getElementsByTagName('li');
+	let listWidth = 400 * childs.length;
+
+	document.querySelector('.list').style.width = listWidth + 'px' // 一定要设置宽度，不然浮动不起来
+
+	function handelDotClassName(newIndex) {
+		for(let i = 0; i < dotsBtn.length; i ++) {
+			dotsBtn[i].className = 'dotBtn' // TODO: 操作dom太频繁，清除类名
+		}
+		dotsBtn[newIndex].className = 'dotBtn active'
+	}
+
+
+
+// 左移动
+	function next() {
+		index ++
+		if (index >= 4) {
+				list.style.left = -index * IMAGE_WIDTH + 'px' // 先快速跳转到克隆的图片，再利用延时器跳转到第一张图片，这样的就可以快速，无缝衔接
+			setTimeout(() => {
+				index = 0
+				list.style.transition='none'
+				list.style.left = -index * IMAGE_WIDTH + 'px'
+				handelDotClassName(index)
+			}, 500) // 这里的时间，最好和我们动画的时间一致
+			
+		} else {
+				list.style.transition = 'left .5s linear' // 把取消的动画，重新加上
+				list.style.left = -index * IMAGE_WIDTH + 'px'
+				handelDotClassName(index)
+		}
+
+		
+	
+	}
+
+// 右移动
+	function prev() {
+		index --
+		
+		if (index < 0) {
+			list.style.transition='none'
+			list.style.left = -4 * IMAGE_WIDTH + 'px' // 先切换到最后一张图片，再使用定时器，动画的衔接最后真实的一张图片
+			setTimeout(() => {
+				index = 3
+				list.style.transition = 'left .5s linear'
+				list.style.left = -index * IMAGE_WIDTH + 'px'
+				handelDotClassName(index)
+			}, 0)
+		} else {
+			list.style.transition = 'left .5s linear'
+			list.style.left = -index * IMAGE_WIDTH + 'px'
+			handelDotClassName(index)
+		}
+		
+	}
+
+
+dotContainer.onclick = (e) => {
+
+	console.log(e.target)
+	let dotIndex = e.target.getAttribute('data-index');
+	list.style.left = -dotIndex * IMAGE_WIDTH + 'px'
+	handelDotClassName(dotIndex)
+
+}
+
+
+
+
+// 定时轮播
+// setInterval(() => next(), 1000)
+
+</script>
+</body>
+</html>
